@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User } = require('../../models');  // Make sure the path is correct
+const { User } = require('../../models/user');  // Make sure the path is correct
 
 // Route for user registration
 router.post('/register', async (req, res) => {

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { BlogPost } = require('../../models');  // Make sure the path is correct
+const { BlogPost } = require('../../models/blogpost');  // Make sure the path is correct
 
 // Route for creating a new blog post
 router.post('/new', async (req, res) => {

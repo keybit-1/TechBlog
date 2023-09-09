@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Comment } = require('../../models');  // Make sure the path is correct
+const { Comment } = require('../../models/comment');  // Make sure the path is correct
 
 // Route for adding a new comment
 router.post('/new', async (req, res) => {
