@@ -2,6 +2,8 @@ console.log("Server.js is starting...");
 
 // Import modules and routes
 const express = require('express');
+const session = require('express-session');
+const passport = require('passport');
 const sequelize = require('./config/config');  // Make sure the path is correct
 const { User, BlogPost, Comment } = require('./models/relationships');  // Import models and relationships
 const mainRoutes = require('./routes');  // Import main routes from ./routes/index.js
@@ -17,6 +19,17 @@ const PORT = process.env.PORT || 3000;
 // Middleware setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Session middleware setup
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+}));
+
+// Passport middleware setup
+app.use(passport.initialize());
+app.use(passport.session());
 
 console.log("Middleware set up.");
 
@@ -38,6 +51,7 @@ sequelize.sync({ force: false })  // Change force to 'true' only if you want to 
       console.log(`Server is running on port ${PORT}`);
     });
   });
+
 
 
 
