@@ -1,29 +1,36 @@
+console.log("Server.js is starting...");
+
+// Import modules and routes
 const express = require('express');
 const sequelize = require('./config/config');  // Make sure the path is correct
 const { User, BlogPost, Comment } = require('./models/relationships');  // Import models and relationships
-const userRoutes = require('./routes/api/userRoutes');  // Import user routes
-const postRoutes = require('./routes/api/postRoutes');  // Import post routes
-const commentRoutes = require('./routes/api/commentRoutes');  // Import comment routes
+const mainRoutes = require('./routes');  // Import main routes from ./routes/index.js
+
+console.log("Required modules imported.");
+
+// Environment variables
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware for parsing JSON and form data
+// Middleware setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Use the user, post, and comment routes
-app.use('/api/users', userRoutes);
-app.use('/api/posts', postRoutes);
-app.use('/api/comments', commentRoutes);  // New line for comment routes
+console.log("Middleware set up.");
 
-// Optional: Test the DB connection
+// Use the main routes
+app.use(mainRoutes);  // No need to add '/api' prefix as it's already in routes/index.js
+
+console.log("API routes set up.");
+
+// Optional: Test the database connection
 sequelize.authenticate()
   .then(() => console.log('Database connected successfully.'))
   .catch(err => console.log('Error connecting to the database: ', err));
 
-// Sync database and then start the server
+// Sync database and start the server
 sequelize.sync({ force: false })  // Change force to 'true' only if you want to reset your database
   .then(() => {
     console.log('Database synced');
@@ -31,6 +38,10 @@ sequelize.sync({ force: false })  // Change force to 'true' only if you want to 
       console.log(`Server is running on port ${PORT}`);
     });
   });
+
+
+
+
 
 
 

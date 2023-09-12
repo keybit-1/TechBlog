@@ -1,18 +1,68 @@
+// Import the necessary modules
 const router = require('express').Router();
-const { Comment } = require('../../models/comment');  // Make sure the path is correct
 
-// Route for adding a new comment
-router.post('/new', async (req, res) => {
+// Import your Comment model here (Adjust the path as necessary)
+let Comment;
+try {
+  Comment = require('../../models/comment');
+} catch (err) {
+  console.error("Error importing Comment model:", err);
+}
+
+// Test GET route to ensure that the routing works
+router.get('/test', (req, res) => {
+  res.json({ message: 'Comment route test is working' });
+});
+
+// GET route to fetch all comments
+router.get('/', async (req, res) => {
+  // Log for debugging purposes
+  console.log("Inside GET /comments route");
+
+  if (!Comment) {
+    return res.status(500).json({ error: "Comment model is not defined" });
+  }
+
   try {
-    const newComment = await Comment.create({
-      content: req.body.content,
-      userId: req.body.userId,  // Assume you have the user's ID
-      postId: req.body.postId  // Assume you have the post's ID
-    });
-    res.status(200).json(newComment);
+    // Fetch all comments from the database
+    const allComments = await Comment.findAll();
+    
+    // Send back all comments' information
+    res.status(200).json(allComments);
   } catch (err) {
-    res.status(500).json(err);
+    // Log the error and send a 500 status code
+    console.error("Error in GET /comments route:", err);
+    res.status(500).json({ error: 'Could not fetch comments' });
   }
 });
 
+// POST route for adding a new comment
+router.post('/new', async (req, res) => {
+  // Log for debugging purposes
+  console.log("Inside /new comment route");
+
+  if (!Comment) {
+    return res.status(500).json({ error: "Comment model is not defined" });
+  }
+
+  try {
+    // Create a new comment in the database
+    const newComment = await Comment.create({
+      commentText: req.body.commentText,  // Changed from content to commentText
+      userId: req.body.userId,  // Assume you have the user's ID
+      postId: req.body.postId   // Assume you have the post's ID
+    });
+    
+    // Send back the new comment's information
+    res.status(201).json(newComment);
+  } catch (err) {
+    // Log the error and send a 500 status code
+    console.error("Error in /new comment route:", err);
+    res.status(500).json({ error: 'Could not add new comment' });
+  }
+});
+
+// Export the router
 module.exports = router;
+
+
