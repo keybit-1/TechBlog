@@ -1,5 +1,6 @@
 // Import the necessary modules
 const router = require('express').Router();
+const { ensureAuthenticated } = require('../../config/auth'); // Import ensureAuthenticated middleware
 
 // Import your Comment model here (Adjust the path as necessary)
 let Comment;
@@ -37,7 +38,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST route for adding a new comment
-router.post('/new', async (req, res) => {
+router.post('/new', ensureAuthenticated, async (req, res) => {
   // Log for debugging purposes
   console.log("Inside /new comment route");
 
@@ -48,9 +49,9 @@ router.post('/new', async (req, res) => {
   try {
     // Create a new comment in the database
     const newComment = await Comment.create({
-      commentText: req.body.commentText,  // Changed from content to commentText
-      userId: req.body.userId,  // Assume you have the user's ID
-      postId: req.body.postId   // Assume you have the post's ID
+      commentText: req.body.commentText,
+      userId: req.body.userId,
+      postId: req.body.postId
     });
     
     // Send back the new comment's information
@@ -64,5 +65,6 @@ router.post('/new', async (req, res) => {
 
 // Export the router
 module.exports = router;
+
 
 

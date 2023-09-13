@@ -63,3 +63,4 @@ sequelize.sync({ force: false })  // Change force to 'true' only if you want to 
 
 
 
+
